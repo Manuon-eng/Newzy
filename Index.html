@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Silent Architecture</title>
+    
+    <!-- Ancient Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700&family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --bg-color: #1a1510;
+            --gold: #c5a059;
+            --text: #e0dcd0;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            background-image: url("https://www.transparenttextures.com/patterns/wood-pattern.png");
+            color: var(--text);
+            font-family: 'Cormorant Garamond', serif;
+            height: 100vh;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* --- SCREEN 1: UPLOAD UI --- */
+        #upload-screen {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100%;
+            text-align: center;
+            background: radial-gradient(circle, rgba(43,29,24,0.9) 0%, rgba(26,21,16,1) 100%);
+            padding: 20px;
+        }
+
+        h1 {
+            font-family: 'Cinzel', serif;
+            font-size: 3rem;
+            color: var(--gold);
+            text-shadow: 0 4px 10px rgba(0,0,0,0.8);
+            margin-bottom: 10px;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+
+        p.subtitle {
+            font-size: 1.2rem;
+            margin-bottom: 40px;
+            opacity: 0.8;
+            font-style: italic;
+        }
+
+        .upload-container {
+            position: relative;
+            overflow: hidden;
+            display: inline-block;
+        }
+
+        .btn-style {
+            border: 2px solid var(--gold);
+            color: var(--gold);
+            background-color: rgba(0,0,0,0.4);
+            padding: 15px 40px;
+            font-family: 'Cinzel', serif;
+            font-size: 1.1rem;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            box-shadow: 0 0 20px rgba(0,0,0,0.5);
+        }
+
+        .btn-style:hover {
+            background-color: var(--gold);
+            color: var(--bg-color);
+            box-shadow: 0 0 30px var(--gold);
+        }
+
+        input[type=file] {
+            font-size: 100px;
+            position: absolute;
+            left: 0;
+            top: 0;
+            opacity: 0;
+            cursor: pointer;
+            width: 100%;
+            height: 100%;
+        }
+
+        /* --- SCREEN 2: PDF VIEWER --- */
+        #viewer-screen {
+            display: none; /* Hidden initially */
+            height: 100vh;
+            width: 100%;
+            position: relative;
+        }
+
+        iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+
+        .back-btn {
+            position: absolute;
+            bottom: 20px;
+            right: 20px;
+            background-color: var(--gold);
+            color: var(--bg-color);
+            padding: 10px 20px;
+            font-family: 'Cinzel', serif;
+            font-weight: bold;
+            border: none;
+            cursor: pointer;
+            border-radius: 4px;
+            opacity: 0.7;
+            transition: 0.3s;
+        }
+
+        .back-btn:hover {
+            opacity: 1;
+        }
+
+        /* Mobile Adjustments */
+        @media (max-width: 768px) {
+            h1 { font-size: 2rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- UI PART 1: The Upload Screen -->
+    <div id="upload-screen">
+        <h1>The Silent Architecture</h1>
+        <p class="subtitle">Memoirs of a Glitch</p>
+
+        <div class="upload-container">
+            <button class="btn-style">Upload Manuscript (PDF)</button>
+            <input type="file" id="fileInput" accept="application/pdf">
+        </div>
+        
+        <p style="margin-top: 20px; font-size: 0.9rem; opacity: 0.5;">
+            Select the PDF file to decrypt contents.
+        </p>
+    </div>
+
+    <!-- UI PART 2: The PDF Viewer -->
+    <div id="viewer-screen">
+        <!-- The PDF will load here -->
+        <iframe id="pdfFrame" src=""></iframe>
+        
+        <!-- Button to go back to upload screen -->
+        <button class="back-btn" onclick="resetPage()">Close Document</button>
+    </div>
+
+    <script>
+        const fileInput = document.getElementById('fileInput');
+        const uploadScreen = document.getElementById('upload-screen');
+        const viewerScreen = document.getElementById('viewer-screen');
+        const pdfFrame = document.getElementById('pdfFrame');
+
+        fileInput.addEventListener('change', function(event) {
+            const file = event.target.files[0];
+
+            if (file && file.type === 'application/pdf') {
+                // Create a temporary URL for the uploaded file
+                const fileURL = URL.createObjectURL(file);
+                
+                // Set the iframe source to that URL
+                pdfFrame.src = fileURL;
+
+                // Switch screens
+                uploadScreen.style.display = 'none';
+                viewerScreen.style.display = 'block';
+            } else {
+                alert('Please upload a valid PDF file.');
+            }
+        });
+
+        function resetPage() {
+            // Clear the iframe
+            pdfFrame.src = "";
+            // Reset input
+            fileInput.value = "";
+            // Switch screens back
+            viewerScreen.style.display = 'none';
+            uploadScreen.style.display = 'flex';
+        }
+    </script>
+</body>
+  </html>
